@@ -59,7 +59,7 @@ jobs:
         # Used to differentiate multiple results for one commit
         category: gradle-spotbugs
         # Specify the path since this SARIF is relative to the java folder.
-        # checkout_path: ${{ github.workspace }}/src/main/java/
+        checkout_path: ${{ github.workspace }}/src/main/java/
     
     - name: Perform CodeQL Analysis
       if: always() 
