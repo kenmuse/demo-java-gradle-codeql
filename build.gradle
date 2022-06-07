@@ -1,0 +1,93 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'checkstyle'
+    id "com.github.spotbugs" version "5.0.7"
+    id 'pmd'
+}
+
+repositories { 
+    mavenCentral() 
+}
+
+group "kenmuse"
+version "1.0-SNAPSHOT"
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+dependencies {
+    implementation "joda-time:joda-time:2.2"
+    testImplementation "junit:junit:4.12"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+}
+
+application {
+    mainClass = 'sample.HelloWorld'
+}
+
+checkstyle {
+    toolVersion = '8.12'
+    ignoreFailures = false
+    configFile = file("${rootDir}/quality/checkstyle.xml")
+}
+
+jar {
+
+    manifest {
+        attributes "Main-Class": "sample.HelloWorld"
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+pmd {
+    toolVersion = '6.46.0'
+    ignoreFailures = false
+    ruleSetFiles = files("${rootDir}/quality/pmd.xml")
+    ruleSets = ["category/java/bestpractices.xml"]
+}
+
+spotbugs {
+    ignoreFailures = false
+    effort = "max"
+    reportLevel = "low"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+
+tasks.withType(Checkstyle) {
+    reports {
+        html {
+            required = true
+            destination file("$buildDir/reports/checkstyle.html")
+        }
+    }
+}
+
+tasks.withType(Pmd) {
+    reports {
+        html {
+            required = false
+        }
+        xml {
+            required = true
+            destination file("$buildDir/reports/pmd.xml")
+        }
+    }
+}
+
+spotbugsMain {
+    reports {
+        sarif {
+            required = true
+            outputLocation = file("$buildDir/reports/spotbugs.sarif")
+        }
+    }
+}

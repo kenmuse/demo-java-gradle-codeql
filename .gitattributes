@@ -1,0 +1,12 @@
+# Set default behavior to automatically normalize line endings.
+* text=auto
+
+# Windows files require CRLF
+*.{cmd,[cC][mM][dD]} text eol=crlf
+*.{bat,[bB][aA][tT]} text eol=crlf
+
+# Bash scripts require linefeeds
+*.sh text eol=lf
+
+ # Large files
+*.iso filter=lfs diff=lfs merge=lfs -text
