@@ -55,8 +55,10 @@ jobs:
         # Used to differentiate multiple results for one commit
         category: gradle-spotbugs
         # Specify the path since this SARIF is relative to the java folder.
-        checkout_path: ${{ github.workspace }}/src/main/java/
-        
+        # checkout_path: ${{ github.workspace }}/src/main/java/
+    - name: Configure results
+      run: sed -i 's/file:\//file:\/\/\//gi' build/reports/spotbugs.sarif
+    
     - name: Perform CodeQL Analysis
       if: always() 
       uses: github/codeql-action/analyze@v2
