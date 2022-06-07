@@ -47,19 +47,19 @@ jobs:
 
     - name: Configure results
       if: always() 
-      run: sed -i 's/file:\//file:\/\/\//gi' build/reports/spotbugs.sarif
+      run: jq '(.runs[].results[].locations[].physicalLocation.artifactLocation.uri |= "src/main/java/"+ . )' build/reports/spotbugs.sarif | sed -r 's/file:(.+)\/src\/main\/java/file:\/\/\1/gi' > build/reports/spotbugs-clean.sarif
 
     - name: Upload SARIF file
       if: always() 
       uses: github/codeql-action/upload-sarif@v2
       with:
         # Path to SARIF file relative to the root of the repository
-        sarif_file: build/reports/spotbugs.sarif
+        sarif_file: build/reports/spotbugs-clean.sarif
         # Optional category for the results
         # Used to differentiate multiple results for one commit
         category: gradle-spotbugs
         # Specify the path since this SARIF is relative to the java folder.
-        checkout_path: ${{ github.workspace }}/src/main/java/
+        # checkout_path: ${{ github.workspace }}/src/main/java/
     
     - name: Perform CodeQL Analysis
       if: always() 
@@ -76,9 +76,12 @@ jobs:
       with:
         name: report
         # A file, directory or wildcard pattern that describes what to upload
-        path: build/reports/spotbugs.sarif   
+        path: build/reports
     
     - run: jq . build/reports/spotbugs.sarif
+      if: always() 
+  
+    - run: jq . build/reports/spotbugs-clean.sarif
       if: always() 
     
     # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
