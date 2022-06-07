@@ -65,6 +65,7 @@ jobs:
         category: "codeql-direct"
     
     - name: Upload a Build Artifact
+      if: always() 
       uses: actions/upload-artifact@v3.1.0
       with:
         name: report
@@ -72,6 +73,7 @@ jobs:
         path: build/reports/spotbugs.sarif   
     
     - run: jq . build/reports/spotbugs.sarif
+      if: always() 
     
     # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
     # the publishing section of your build.gradle
