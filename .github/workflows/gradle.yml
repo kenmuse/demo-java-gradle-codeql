@@ -63,7 +63,16 @@ jobs:
         # for the same tool and ref. If you don't use `category` in your workflow, 
         # GitHub will generate a default category name for you
         category: "codeql-direct"
-        
+    
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3.1.0
+      with:
+        name: report
+        # A file, directory or wildcard pattern that describes what to upload
+        path: build/reports/spotbugs.sarif   
+    
+    - run: jq . build/reports/spotbugs.sarif
+    
     # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
     # the publishing section of your build.gradle
     # - name: Publish to GitHub Packages
