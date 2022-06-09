@@ -54,12 +54,12 @@ jobs:
       uses: github/codeql-action/upload-sarif@v2
       with:
         # Path to SARIF file relative to the root of the repository
-        sarif_file: build/reports/spotbugs-clean.sarif
+        sarif_file: build/reports/spotbugs.sarif
         # Optional category for the results
         # Used to differentiate multiple results for one commit
         category: gradle-spotbugs
         # Specify the path since this SARIF is relative to the java folder.
-        # checkout_path: ${{ github.workspace }}/src/main/java/
+        # checkout_path: ${{ github.workspace }}/src/main/java
     
     - name: Perform CodeQL Analysis
       if: always() 
